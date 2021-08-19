@@ -1,46 +1,54 @@
 import React from "react";
-import './App.css';
-import getData from "./API/getData";
+import { useDispatch, useSelector } from "react-redux";
+import "./App.css";
+
+import Pagination from "./Components/Pagination";
+import { getDataThunkCreator } from "./redux/actions/index";
 
 const App = () => {
 
+  const { data, currentPage, totalCount, pageLimit } = useSelector(
+    (store) => store
+  );
+  const dispatch = useDispatch();
+
   React.useEffect(() => {
     // get Data from json-server
-    getData()
-  }, [])
-
+    dispatch(getDataThunkCreator(currentPage));
+  }, [currentPage]);
+  
+  const tableElements = data.map((item) => (
+      <tr key={item.id}>
+        <td>{item.date}</td>
+        <td>{item.name}</td>
+        <td>{item.count}</td>
+        <td>{item.distance}</td>
+      </tr>
+    )     
+  );
   return (
     <div className="App">
       <table>
         <thead>
           <tr>
-              <th>Date</th>
-              <th>Name</th>
-              <th>Number<button>up</button><button>down</button></th>
-              <th>Distance</th>
+            <th>Date</th>
+            <th>Name</th>
+            <th>Number</th>
+            <th>Distance</th>
           </tr>
         </thead>
 
         <tbody>
-          <tr>
-            <td>Alvin</td>
-            <td>Eclair</td>
-            <td>$0.87</td>
-          </tr>
-          <tr>
-            <td>Alan</td>
-            <td>Jellybean</td>
-            <td>$3.76</td>
-          </tr>
-          <tr>
-            <td>Jonathan</td>
-            <td>Lollipop</td>
-            <td>$7.00</td>
-          </tr>
+          {tableElements}
         </tbody>
       </table>
+      <Pagination
+        totalCount={totalCount}
+        currentPage={currentPage}
+        pageLimit={pageLimit}
+      />
     </div>
   );
-}
+};
 
 export default App;

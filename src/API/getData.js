@@ -1,13 +1,17 @@
 import axios from "axios";
 
-const getData = async () => {
+export const getData = async (currentPage = 1, limit = 3) => {
   try {
-    const { data } = await axios.get("/data");
-    console.log(data);
+    const url = `/data?_page=${currentPage}&_limit=${limit}`;
+    const { data, headers } = await axios.get(url);
+
+    // get totalCount of pages
+    const totalCount = + headers['x-total-count'];
+
+    return [data, totalCount];
   } catch (e) {
-    alert('Can not get data from server');
+    alert("Can not get data from server");
     console.error(e);
   }
 };
 
-export default getData;
