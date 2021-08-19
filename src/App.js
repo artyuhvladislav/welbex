@@ -1,6 +1,13 @@
-import logo from './logo.svg';
+import React from "react";
 import './App.css';
-function App() {
+import getData from "./API/getData";
+
+const App = () => {
+
+  React.useEffect(() => {
+    // get Data from json-server
+    getData()
+  }, [])
 
   return (
     <div className="App">
