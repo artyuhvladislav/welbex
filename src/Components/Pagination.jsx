@@ -2,19 +2,10 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { setCurrentPageAC } from "../redux/actions/index";
 
-const Pagination =  React.memo(({ currentPage, totalCount, pageLimit }) => {
- 
-  const dispatch = useDispatch();
 
-  // dispatch nextPage ot the store
-  const handleClick = (nextPage) => {
-    dispatch(setCurrentPageAC(nextPage));
-  };
+const getTotalPagesCount = (totalCount, pageLimit) => Math.ceil(totalCount / pageLimit);
 
-  // get count of pages
-  const getPagesCount = () => Math.ceil(totalCount / pageLimit);
-
-  const pagesElements = Array(getPagesCount())
+const renderPageElements = (totalPagesCount, currentPage)  => Array(totalPagesCount)
     .fill(0)
     .map((_, index) => (
       <li
@@ -25,6 +16,19 @@ const Pagination =  React.memo(({ currentPage, totalCount, pageLimit }) => {
       </li>
     ));
 
+
+const Pagination =  React.memo(({ currentPage, totalCount, pageLimit }) => {
+ 
+  const dispatch = useDispatch();
+
+  const handleClick = (nextPage) => {
+    dispatch(setCurrentPageAC(nextPage));
+  };
+  
+  const totalPagesCount = getTotalPagesCount(totalCount, pageLimit)
+
+  const pageElements = renderPageElements(totalPagesCount ,currentPage)
+  
   return (
     <ul
       className="pagination"
@@ -32,7 +36,7 @@ const Pagination =  React.memo(({ currentPage, totalCount, pageLimit }) => {
         handleClick(+e.target.textContent);
       }}
     >
-      {pagesElements}
+      {pageElements}
     </ul>
   );
 });

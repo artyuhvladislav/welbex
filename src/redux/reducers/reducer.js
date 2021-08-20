@@ -5,13 +5,12 @@ const initialState = {
   pageLimit: 3,
 };
 
-const gettingData = "gettingData";
+const getData = "gettingData";
 const setCurrentPage = 'setCurrentPage'
-
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case gettingData: {
+    case getData: {
       return {
         ...state,
         data: action.data,
