@@ -3,45 +3,42 @@ import { useDispatch, useSelector } from "react-redux";
 import "./App.css";
 
 import Pagination from "./Components/Pagination";
+import SortBtn from "./Components/SortBtn";
+import Table from "./Components/Table";
 import { getDataThunkCreator } from "./redux/actions/index";
 
 const App = () => {
+  const { currentPage, totalCount, pageLimit } = useSelector((store) => store);
+  const data = useSelector((store) => store.data);
 
-  const { data, currentPage, totalCount, pageLimit } = useSelector(
-    (store) => store
-  );
   const dispatch = useDispatch();
+
+  const [sortedData, setSortedData] = React.useState(data);
+
+  React.useEffect(() => {
+    setSortedData(data);
+  }, [data]);
 
   React.useEffect(() => {
     // get Data from json-server
     dispatch(getDataThunkCreator(currentPage));
   }, [currentPage]);
+
+  const handleOnSort = (direction, sortFiled) => {
   
-  const tableElements = data.map((item) => (
-      <tr key={item.id}>
-        <td>{item.date}</td>
-        <td>{item.name}</td>
-        <td>{item.count}</td>
-        <td>{item.distance}</td>
-      </tr>
-    )     
-  );
+    const newSortedData = [...sortedData].sort((a, b) => {
+      if(direction === 'up') {
+        return a[sortFiled] > b[sortFiled] && 1 || -1
+      } else if(direction === 'down') {
+        return a[sortFiled] < b[sortFiled] && 1 || -1
+      }
+    });
+    setSortedData(newSortedData);
+  }
+
   return (
     <div className="App">
-      <table>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Name</th>
-            <th>Number</th>
-            <th>Distance</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {tableElements}
-        </tbody>
-      </table>
+      <Table data={sortedData} handleOnSort={handleOnSort}/>
       <Pagination
         totalCount={totalCount}
         currentPage={currentPage}
