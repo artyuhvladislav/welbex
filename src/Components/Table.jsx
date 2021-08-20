@@ -30,7 +30,7 @@ const Table = ({ data, handleOnSort }) => {
             />
           </th>
           <th>
-            <span>Number</span>
+            <span>Count</span>
             <SortBtn
               handleOnSort={handleOnSort}
               direction={"up"}

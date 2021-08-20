@@ -19,3 +19,7 @@ code {
 .material-icons {
   cursor: pointer;
 }
+
+select {
+  display: block;
+}

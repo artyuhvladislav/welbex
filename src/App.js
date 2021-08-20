@@ -1,6 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "./App.css";
+import FilterBtn from "./Components/FilterBtn";
 
 import Pagination from "./Components/Pagination";
 import SortBtn from "./Components/SortBtn";
@@ -13,10 +14,10 @@ const App = () => {
 
   const dispatch = useDispatch();
 
-  const [sortedData, setSortedData] = React.useState(data);
+  const [tableData, setTableData] = React.useState(data);
 
   React.useEffect(() => {
-    setSortedData(data);
+    setTableData(data);
   }, [data]);
 
   React.useEffect(() => {
@@ -24,21 +25,38 @@ const App = () => {
     dispatch(getDataThunkCreator(currentPage));
   }, [currentPage]);
 
+  // handle on sorting table
   const handleOnSort = (direction, sortFiled) => {
-  
-    const newSortedData = [...sortedData].sort((a, b) => {
+    const sortedData = [...tableData].sort((a, b) => {
       if(direction === 'up') {
         return a[sortFiled] > b[sortFiled] && 1 || -1
       } else if(direction === 'down') {
         return a[sortFiled] < b[sortFiled] && 1 || -1
       }
     });
-    setSortedData(newSortedData);
+    setTableData(sortedData);
+  }
+
+  // handle on filtering table
+  const handleOnFilter = ({ column, option, value }) => {
+    const filteredData = data.filter( item => {
+      if(option === '=') {
+        return item[column] === Number(value)
+      } else if(option === 'contain') {
+        return item[column].toString().toLowerCase().includes(value.toLowerCase())
+      } else if(option === '>') {
+        return item[column] > Number(value)
+      } else if(option === '<') {
+        return item[column] < Number(value)
+      }
+    })
+    setTableData(filteredData)
   }
 
   return (
     <div className="App">
-      <Table data={sortedData} handleOnSort={handleOnSort}/>
+      <FilterBtn handleOnFilter={handleOnFilter} />
+      <Table data={tableData} handleOnSort={handleOnSort} />
       <Pagination
         totalCount={totalCount}
         currentPage={currentPage}
